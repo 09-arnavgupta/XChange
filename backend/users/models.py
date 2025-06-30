@@ -5,4 +5,4 @@ from django.db import models
 # We create models instead of tables in django
 
 class User(models.Model):
-    user = models.TextField(_("User"), max_length=100, unique=True)
+    user = models.TextField(("User"), max_length=100, unique=True)
