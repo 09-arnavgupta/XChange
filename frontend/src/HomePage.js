@@ -1,10 +1,12 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function HomePage() {
+function HomePage() {
   return (
     <div>
       <h1>Welcome to XChange</h1>
-      <p>This is the homepage.</p>
+      <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
     </div>
   );
 }
+
+export default HomePage;

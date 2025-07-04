@@ -1,9 +1,12 @@
 from django.urls import path
 from . import views
-from .views import UserListView
+from .views import UserListView, RegisterView
 from django.http import JsonResponse
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path('', lambda request: JsonResponse({"message": "This is users backend!"})),
-    path('api/users/', UserListView.as_view(), name='user-list')
+    path('api/users/', UserListView.as_view(), name='user-list'),
+    path('api/register/', RegisterView.as_view()),
+    path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
