@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +129,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent  # points to backend/
+
+TEMPLATES[0]['DIRS'] = [
+    BASE_DIR.parent / 'frontend' / 'build'  # ✅ points to frontend/build/
+]
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend', 'build', 'static')  # ✅ correct path to static/
+]
+
+print("=== TEMPLATE DIR ===")
+print(os.path.join(BASE_DIR.parent, 'frontend', 'build'))
+print("====================")
