@@ -20,7 +20,7 @@ from .views import ReactAppView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
+    path('', include('users.urls')),
     # fallback to React
     re_path(r'^.*$', ReactAppView.as_view(), name='react-app'),
 ]

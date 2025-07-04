@@ -1,11 +1,21 @@
-import React from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+import UsersPage from './UsersPage';
+import HomePage from './HomePage';
 
 function App() {
   return (
-    <div>
-      <h1>Hello from React!</h1>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/users" element={<UsersPage />} />
+      </Routes>
+    </Router>
   );
 }
+
 
 export default App;
