@@ -150,4 +150,14 @@ REST_FRAMEWORK = {
     ),
 }
 
-# Custom user model
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'xchange',            # your DB name
+        'USER': 'postgres',           # your PostgreSQL user
+        'PASSWORD': 'password',          # your password
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}

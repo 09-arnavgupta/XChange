@@ -17,21 +17,12 @@ class UserListView(APIView):
 
 
 class RegisterView(APIView):
-    authentication_classes = []        
-    permission_classes = [AllowAny]    
-
-    # def post(self, request):
-    #     serializer = RegisterSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response({"msg": "User registered"}, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request):
-        data = request.data
-        # Just print it on server and send it back in response
-        print("📦 Received data:", data)
-        return Response({
-            "msg": "Received data",
-            "data": data
-        }, status=status.HTTP_200_OK)
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # ✅ Saves to PostgreSQL
+            return Response({"msg": "User registered"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
