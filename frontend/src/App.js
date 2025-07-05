@@ -3,10 +3,10 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import UsersPage from './UsersPage';
-import HomePage from './HomePage';
-import Register from './Register';
-import Login from './Login';
+import UsersPage from './Pages/UsersPage';
+import HomePage from './Pages/HomePage';
+import Register from './Pages/Register';
+import Login from './Pages/Login';
 
 function App() {
   return (
