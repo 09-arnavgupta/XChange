@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-
+from dotenv import load_dotenv
+load_dotenv()  # this will read the .env file
 
 
 
@@ -154,9 +155,9 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'xchange',            # your DB name
-        'USER': 'postgres',           # your PostgreSQL user
-        'PASSWORD': 'password',          # your password
+        'NAME': 'xchange',          
+        'USER': 'postgres',        
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432',
     }

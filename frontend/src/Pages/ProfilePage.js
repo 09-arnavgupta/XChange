@@ -8,6 +8,9 @@ function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      const url = `${process.env.REACT_APP_API_BASE_URL}/users/${username}`
+      console.log('Fetching user profile from:', url); // Debugging line
+
       try {
         const res = await axios.get(`http://localhost:8000/api/users/${username}/`, {
           headers: {
