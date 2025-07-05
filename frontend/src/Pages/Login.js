@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
   });
+
+  const navigate = useNavigate(); // 🚀 Used for redirecting
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -17,9 +20,11 @@ function Login() {
       const res = await axios.post('http://localhost:8000/api/login/', credentials);
       localStorage.setItem('access', res.data.access);
       localStorage.setItem('refresh', res.data.refresh);
+      localStorage.setItem('username', credentials.username); // 👈 Save username
       alert('Logged in!');
+      navigate('/home'); // 👈 Redirect to homepage
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response?.data || err.message);
       alert('Login failed');
     }
   };

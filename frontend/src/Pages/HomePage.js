@@ -1,10 +1,13 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 function HomePage() {
+  const username = localStorage.getItem('username');
+
   return (
     <div>
-      <h1>Welcome to XChange</h1>
-      <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
+      <h1>Hello, {username} 👋</h1>
+      <Link to="../profile">Go to Profile</Link>
     </div>
   );
 }
