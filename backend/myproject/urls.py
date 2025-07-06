@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('users.urls')),
     # fallback to React
     re_path(r'^.*$', ReactAppView.as_view(), name='react-app'),
+    path('', include('listings.urls')),
 ]
 
 
