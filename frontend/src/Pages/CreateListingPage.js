@@ -13,7 +13,7 @@ export default function CreateListingPage() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/;`, form)
+    axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/`, form)
       .then(() => alert("Listing created!"))
       .catch(err => console.error(err));
   };

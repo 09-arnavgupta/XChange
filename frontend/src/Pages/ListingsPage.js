@@ -6,7 +6,10 @@ export default function ListingsPage() {
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_BASE_URL}/listings/`)
-      .then(res => setListings(res.data))
+      .then(res => {
+        console.log("API Response:", res.data); // Check this!
+        setListings(res.data);
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -14,7 +17,7 @@ export default function ListingsPage() {
     <div>
       <h1>Listings</h1>
       <ul>
-        {listings.map(listing => (
+        {Array.isArray(listings) && listings.map(listing => (
           <li key={listing.id}>
             <strong>{listing.title}</strong>: {listing.description} ({listing.cash_value}₹)
           </li>
