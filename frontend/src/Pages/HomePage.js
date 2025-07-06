@@ -7,7 +7,8 @@ function HomePage() {
   return (
     <div>
       <h1>Hello, {username} 👋</h1>
-      <Link to="../profile">Go to Profile</Link>
+      <Link to="../profile">Go to Profile</Link><br />
+      <Link to="../listings">View Listings</Link>
     </div>
   );
 }
