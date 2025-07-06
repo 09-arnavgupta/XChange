@@ -4,7 +4,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/users/")
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users`)
       .then(res => res.json())
       .then(data => setUsers(data.users));
   }, []);
