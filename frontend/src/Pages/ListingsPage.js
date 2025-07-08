@@ -34,7 +34,7 @@ export default function ListingsPage() {
       
       <button 
         className="btn-secondary" 
-        onClick={() => navigate('/create')}
+        onClick={() => navigate('/create-listing')}
         style={{marginBottom: '2rem'}}
       >
         ➕ Create New Listing
@@ -66,7 +66,7 @@ export default function ListingsPage() {
         ) : (
           <div className="card">
             <p style={{textAlign: 'center', color: '#666'}}>
-              No listings available yet. Be the first to create one! 🚀
+              No listings available yet. Be the first to create one! 
             </p>
           </div>
         )}
