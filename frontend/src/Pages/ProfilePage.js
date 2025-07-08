@@ -3,26 +3,26 @@ import axios from 'axios';
 
 function Profile() {
   const [user, setUser] = useState(null);
-  const accessToken = localStorage.getItem('access');
-  const username = localStorage.getItem('username');
+  const username = localStorage.getItem('username'); // Or get from backend if you prefer
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/users/${username}/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        console.log('User data:', res.data); // Debugging line
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/users/${username}/`,
+          { withCredentials: true } // Send cookies
+        );
         setUser(res.data);
+        console.log('User profile fetched:', res.data);
       } catch (err) {
         console.error('Error fetching user:', err.response?.data || err.message);
       }
     };
 
-    fetchProfile();
-  }, [username, accessToken]);
+    if (username) {
+      fetchProfile();
+    }
+  }, [username]);
 
   if (!user) return <p>Loading profile...</p>;
 

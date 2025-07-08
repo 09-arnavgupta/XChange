@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser
 
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 # Import your serializer
 from .serializers import RegisterSerializer
 from .models import CustomUser
@@ -41,3 +43,32 @@ class UserDetailView(APIView):
             return Response(serializer.data)
         except CustomUser.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            access = response.data.get('access')
+            refresh = response.data.get('refresh')
+            # Set cookies
+            response.set_cookie(
+                key='access',
+                value=access,
+                httponly=True,
+                secure=False,  # Set to True in production (HTTPS)
+                samesite='Lax',
+                path='/'  
+            )
+            response.set_cookie(
+                key='refresh',
+                value=refresh,
+                httponly=True,
+                secure=False,  # Set to True in production (HTTPS)
+                samesite='Lax',
+                path='/'
+            )
+            # Optionally remove tokens from response body
+            response.data.pop('access', None)
+            response.data.pop('refresh', None)
+        return response

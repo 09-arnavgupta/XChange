@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Add this import
 
 export default function CreateListingPage() {
   const [form, setForm] = useState({
@@ -7,14 +8,19 @@ export default function CreateListingPage() {
     cash_value: '', tags: '', location: ''
   });
 
+  const navigate = useNavigate(); // Add this line
+
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/`, form)
-      .then(() => alert("Listing created!"))
+    axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/`, form, {withCredentials: true})
+      .then(() => {
+        alert("Listing created!");
+        navigate('/listings'); 
+      })
       .catch(err => console.error(err));
   };
 

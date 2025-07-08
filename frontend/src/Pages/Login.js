@@ -8,26 +8,26 @@ function Login() {
     password: '',
   });
 
-  const navigate = useNavigate(); // 🚀 Used for redirecting
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, credentials);
-      localStorage.setItem('access', res.data.access);
-      localStorage.setItem('refresh', res.data.refresh);
-      localStorage.setItem('username', credentials.username); // 👈 Save username
-      alert('Logged in!');
-      navigate('/home'); // 👈 Redirect to homepage
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert('Login failed');
-    }
-  };
+  e.preventDefault();
+  try {
+    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, credentials, {
+      withCredentials: true, // Important: send/receive cookies
+    });
+    localStorage.setItem('username', credentials.username); // You can keep this if needed
+    alert('Logged in!');
+    navigate('/home');
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    alert('Login failed');
+  }
+};
 
   return (
     <form onSubmit={handleLogin}>
