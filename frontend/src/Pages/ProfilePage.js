@@ -3,7 +3,8 @@ import axios from 'axios';
 
 function Profile() {
   const [user, setUser] = useState(null);
-  const username = localStorage.getItem('username'); // Or get from backend if you prefer
+  const [loading, setLoading] = useState(true);
+  const username = (localStorage.getItem('username') || '').trim(); // Or get from backend if you prefer
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -16,24 +17,54 @@ function Profile() {
         console.log('User profile fetched:', res.data);
       } catch (err) {
         console.error('Error fetching user:', err.response?.data || err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     if (username) {
       fetchProfile();
+    } else {
+      setLoading(false);
     }
   }, [username]);
 
-  if (!user) return <p>Loading profile...</p>;
+  if (loading) return <div className="loading">Loading profile...</div>;
+  if (!user) return <div className="error">Unable to load profile</div>;
 
   return (
-    <div>
-      <h2>User Profile</h2>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Location:</strong> {user.location}</p>
-      <p><strong>Intent:</strong> {user.intent}</p>
-      <p><strong>Interests:</strong> {user.interests}</p>
+    <div className="main-container">
+      <div className="hero-icon">👤</div>
+      <h2>Your Profile</h2>
+      
+      <div className="card">
+        <div style={{marginBottom: '1rem'}}>
+          <strong>Username:</strong>
+          <div style={{color: '#667eea', fontSize: '1.1rem'}}>{user.username}</div>
+        </div>
+        
+        <div style={{marginBottom: '1rem'}}>
+          <strong>Email:</strong>
+          <div>{user.email}</div>
+        </div>
+        
+        <div style={{marginBottom: '1rem'}}>
+          <strong>Location:</strong>
+          <div>{user.location || 'Not specified'}</div>
+        </div>
+        
+        <div style={{marginBottom: '1rem'}}>
+          <strong>Intent:</strong>
+          <div>{user.intent || 'Not specified'}</div>
+        </div>
+        
+        <div>
+          <strong>Interests:</strong>
+          <div>{user.interests || 'Not specified'}</div>
+        </div>
+      </div>
+      
+      <button className="btn-secondary">Edit Profile</button>
     </div>
   );
 }

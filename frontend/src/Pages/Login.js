@@ -7,6 +7,7 @@ function Login() {
     username: '',
     password: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate(); 
 
@@ -15,26 +16,62 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, credentials, {
-      withCredentials: true, // Important: send/receive cookies
-    });
-    localStorage.setItem('username', credentials.username); // You can keep this if needed
-    alert('Logged in!');
-    navigate('/home');
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    alert('Login failed');
-  }
-};
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, credentials, {
+        withCredentials: true,
+      });
+      localStorage.setItem('username', credentials.username.trim());
+      navigate('/home');
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form onSubmit={handleLogin}>
-      <input name="username" placeholder="Username" onChange={handleChange} />
-      <input name="password" placeholder="Password" type="password" onChange={handleChange} />
-      <button type="submit">Login</button>
-    </form>
+    <div className="main-container">
+      <div className="hero-icon">🔐</div>
+      <h2>Welcome Back</h2>
+      <p style={{marginBottom: '2rem', color: '#666'}}>Sign in to your XChange account</p>
+      
+      <form onSubmit={handleLogin} style={{width: '100%'}}>
+        <div className="form-group">
+          <label className="form-label">Username</label>
+          <input 
+            name="username" 
+            placeholder="Enter your username" 
+            onChange={handleChange}
+            value={credentials.username}
+            required
+          />
+        </div>
+        
+        <div className="form-group">
+          <label className="form-label">Password</label>
+          <input 
+            name="password" 
+            placeholder="Enter your password" 
+            type="password" 
+            onChange={handleChange}
+            value={credentials.password}
+            required
+          />
+        </div>
+        
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing in...' : 'Sign In'}
+        </button>
+      </form>
+      
+      <p style={{marginTop: '1.5rem', color: '#666'}}>
+        Don't have an account? <a href="/register" style={{color: '#667eea'}}>Sign up</a>
+      </p>
+    </div>
   );
 }
 
