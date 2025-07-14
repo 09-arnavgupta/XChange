@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.aiagent-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #667eea;
+  color: #fff;
+  font-size: 2rem;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  text-decoration: none;
+  z-index: 1000;
+  transition: background 0.2s;
+}
+.aiagent-fab:hover {
+  background: #5a67d8;
+}

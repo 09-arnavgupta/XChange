@@ -9,7 +9,7 @@ from .views import CustomTokenObtainPairView
 urlpatterns = [
     path('', lambda request: JsonResponse({"message": "This is users backend!"})),
     path('api/users/', UserListView.as_view(), name='user-list'),
-    path('api/register/', RegisterView.as_view()),
-    path('api/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/users/<str:username>/', UserDetailView.as_view()),
+    path('register/', RegisterView.as_view()),
+    path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('<str:username>/', UserDetailView.as_view()),
 ]

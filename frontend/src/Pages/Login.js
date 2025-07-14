@@ -20,7 +20,7 @@ function Login() {
     setLoading(true);
     
     try {
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/login/`, credentials, {
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, credentials, {
         withCredentials: true,
       });
       localStorage.setItem('username', credentials.username.trim());

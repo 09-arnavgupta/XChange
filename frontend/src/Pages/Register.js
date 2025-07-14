@@ -24,7 +24,7 @@ function Register() {
     setLoading(true);
     
     try {
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/register/`, form);
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/register/`, form);
       navigate('/login');
     } catch (err) {
       console.error(err.response?.data || err.message);

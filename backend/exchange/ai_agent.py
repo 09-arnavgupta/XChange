@@ -326,9 +326,14 @@ def listing_node(state):
 
 # Initialize the graph
 try:
-    graph = StateGraph()
+    state_schema = {
+        "image_bytes": bytes,
+        "user_input": str
+    }
+    graph = StateGraph(state_schema)
     graph.add_node("listing", listing_node)
-    graph.set_entrypoint("listing")
+    graph.add_edge("__start__", "listing")      # Set entrypoint
+    graph.add_edge("listing", "__end__")        # Mark 'listing' as terminal node
     compiled_graph = graph.compile()
 except Exception as e:
     print(f"Error initializing graph: {e}")
@@ -342,62 +347,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import json
-
+# In your AIAgentView (backend/exchange/ai_agent.py)
 class AIAgentView(APIView):
     def post(self, request):
-        """Enhanced AI-powered listing generation endpoint"""
-        try:
-            # Validate request
-            if 'image' not in request.FILES:
-                return Response(
-                    {"error": "No image provided"}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            image = request.FILES["image"]
-            user_input = request.data.get("expectation", "")
-            
-            # Validate image size (max 10MB)
-            if image.size > 10 * 1024 * 1024:
-                return Response(
-                    {"error": "Image too large (max 10MB)"}, 
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Process image
-            image_bytes = image.read()
-            
-            # Run AI pipeline
-            print(f"Processing image: {image.name}, Size: {image.size} bytes")
-            result = compiled_graph.run({
-                "image_bytes": image_bytes, 
-                "user_input": user_input
-            })
-            
-            # Add metadata
-            result["metadata"] = {
-                "image_name": image.name,
-                "image_size": image.size,
-                "user_expectation": user_input,
-                "processing_time": "< 1 minute",
-                "models_used": ["BLIP-2", "Mistral-7B"]
-            }
-            
-            return Response(result, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            print(f"Error in AIAgentView: {e}")
-            return Response(
-                {
-                    "error": "AI processing failed",
-                    "details": str(e),
-                    "fallback": {
-                        "title": "Item for Trade",
-                        "description": "Quality item available for exchange",
-                        "value": "$25",
-                        "matches": [],
-                        "deal": "Contact seller for trade options"
-                    }
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        message = request.data.get("message", "").lower()
+        tags = request.data.get("tags", [])
+        if "find" in message:
+            return Response({"reply": "What are you looking for? Please describe the item."})
+        if "list" in message:
+            return Response({"reply": "Please upload an image of your item."})
+        if "image" in request.FILES:
+            return Response({"reply": "Image received. Please enter a title and description."})
+        if tags:
+            return Response({"reply": f"Tags received: {', '.join(tags)}. Please enter price and exchange item you want."})
+        # Add more logic for each step...
+        return Response({"reply": "How can I help you next?"})

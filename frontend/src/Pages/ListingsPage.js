@@ -10,7 +10,7 @@ export default function ListingsPage() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/listings/`);
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/listings/getlistings/`);
         setListings(res.data);
       } catch (err) {
         console.error(err);

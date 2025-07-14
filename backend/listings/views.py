@@ -10,8 +10,9 @@ class ListingListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Save the listing with any custom logic, e.g.:
         serializer.save()
+    
+    print("Done")
 
 class ListingDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()

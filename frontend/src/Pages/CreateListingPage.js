@@ -20,8 +20,9 @@ export default function CreateListingPage() {
     setLoading(true);
     
     try {
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/`, form, {withCredentials: true});
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/create/`, form, {withCredentials: true});
       navigate('/listings');
+      alert('Listing created successfully!');
     } catch (err) {
       console.error(err);
       alert('Failed to create listing. Please try again.');
