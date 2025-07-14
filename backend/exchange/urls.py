@@ -1,5 +1,5 @@
 from django.urls import path
-from .ai_agent import AIAgentView
+from .ai_agent2 import AIAgentView
 
 urlpatterns = [
     # ...other endpoints...

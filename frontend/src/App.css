@@ -58,3 +58,31 @@
 .aiagent-fab:hover {
   background: #5a67d8;
 }
+
+.tag-box {
+  display: inline-flex;
+  align-items: center;
+  background: #f5f5f7;
+  border-radius: 16px;
+  padding: 2px 10px;
+  margin: 2px 4px 2px 0;
+  font-size: 0.95rem;
+  color: #1d1d1f;
+  border: 1px solid #e0e0e0;
+  box-shadow: none;
+  transition: background 0.2s;
+}
+
+.tag-box .tag-remove {
+  margin-left: 6px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.tag-box .tag-remove:hover {
+  color: #d00;
+}
