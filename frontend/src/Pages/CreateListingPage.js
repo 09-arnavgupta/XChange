@@ -6,9 +6,15 @@ const TAG_OPTIONS = ["Clothing", "Electronics", "Books", "Shoes", "Accessories",
 
 export default function CreateListingPage() {
   const [form, setForm] = useState({
-    title: '', description: '', expected_item: '',
-    cash_value: '', tags: [], location: '', image: null
+    title: '',
+    description: '',
+    expected_item: '',
+    cash_value: '',
+    tags: [],
+    location: '',
+    images: [] // multiple images
   });
+
   const [loading, setLoading] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const navigate = useNavigate();
@@ -18,7 +24,7 @@ export default function CreateListingPage() {
   };
 
   const handleImageChange = e => {
-    setForm({ ...form, image: e.target.files[0] });
+    setForm({ ...form, images: Array.from(e.target.files) });
   };
 
   const handleTagAdd = tag => {
@@ -33,37 +39,45 @@ export default function CreateListingPage() {
   };
 
   const handleAutocompleteDescription = async () => {
-    if (!form.image) {
-      alert('Please upload an image first.');
+    if (!form.images.length) {
+      alert('Please upload at least one image first.');
       return;
     }
+
     const formData = new FormData();
-    formData.append('image', form.image);
+    form.images.forEach(img => formData.append('images', img));
+    formData.append('title', form.title);
+
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/exchange/ai-agent/`,
+        `${process.env.REACT_APP_API_BASE_URL}/listings/ai-agent/`,
         formData
       );
       setForm(f => ({ ...f, description: res.data.features?.description || '' }));
     } catch (err) {
+      console.error(err);
       alert('Failed to generate description.');
     }
   };
 
   const handleAutocompleteTags = async () => {
-    if (!form.image) {
-      alert('Please upload an image first.');
+    if (!form.images.length) {
+      alert('Please upload at least one image first.');
       return;
     }
+
     const formData = new FormData();
-    formData.append('image', form.image);
+    form.images.forEach(img => formData.append('images', img));
+    formData.append('title', form.title);
+
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/exchange/ai-agent/`,
+        `${process.env.REACT_APP_API_BASE_URL}/listings/ai-agent/`,
         formData
       );
       setForm(f => ({ ...f, tags: res.data.features?.tags || [] }));
     } catch (err) {
+      console.error(err);
       alert('Failed to generate tags.');
     }
   };
@@ -71,18 +85,23 @@ export default function CreateListingPage() {
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const submitData = new FormData();
       Object.entries(form).forEach(([key, value]) => {
         if (key === 'tags') {
           submitData.append('tags', JSON.stringify(value));
-        } else if (key === 'image' && value) {
-          submitData.append('image', value);
+        } else if (key === 'images') {
+          value.forEach(img => submitData.append('images', img));
         } else {
           submitData.append(key, value);
         }
       });
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/create/`, submitData, {withCredentials: true});
+
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/listings/create/`, submitData, {
+        withCredentials: true
+      });
+
       navigate('/listings');
       alert('Listing created successfully!');
     } catch (err) {
@@ -97,12 +116,27 @@ export default function CreateListingPage() {
     <div className="main-container">
       <div className="hero-icon">📝</div>
       <h2>Create New Listing</h2>
-      <p style={{marginBottom: '2rem', color: '#666'}}>Share what you want to exchange</p>
-      <form onSubmit={handleSubmit} style={{width: '100%'}}>
+      <p style={{ marginBottom: '2rem', color: '#666' }}>Share what you want to exchange</p>
+
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        {/* TITLE FIRST */}
         <div className="form-group">
-          <label className="form-label">Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <label className="form-label">Title</label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Enter title"
+            value={form.title}
+            onChange={handleChange}
+            required
+          />
         </div>
+
+        <div className="form-group">
+          <label className="form-label">Images (multiple allowed)</label>
+          <input type="file" accept="image/*" multiple onChange={handleImageChange} />
+        </div>
+
         <div className="form-group">
           <label className="form-label">Description</label>
           <textarea
@@ -113,11 +147,14 @@ export default function CreateListingPage() {
             required
             rows={3}
           />
-          <button type="button" onClick={handleAutocompleteDescription} style={{marginLeft: 8}}>Autocomplete</button>
+          <button type="button" onClick={handleAutocompleteDescription} style={{ marginLeft: 8 }}>
+            Autocomplete
+          </button>
         </div>
+
         <div className="form-group">
           <label className="form-label">Tags</label>
-          <div style={{display: 'flex', flexWrap: 'wrap', gap: '0'}}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0' }}>
             {form.tags.map(tag => (
               <span
                 key={tag}
@@ -169,7 +206,7 @@ export default function CreateListingPage() {
             value={tagInput}
             onChange={e => setTagInput(e.target.value)}
             placeholder="Add tag"
-            style={{marginRight: '8px'}}
+            style={{ marginRight: '8px' }}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault();
@@ -177,15 +214,21 @@ export default function CreateListingPage() {
               }
             }}
           />
-          <button type="button" onClick={handleAutocompleteTags} style={{marginLeft: 8}}>Autocomplete</button>
-          <div style={{marginTop: '8px'}}>
+          <button type="button" onClick={handleAutocompleteTags} style={{ marginLeft: 8 }}>
+            Autocomplete
+          </button>
+          <div style={{ marginTop: '8px' }}>
             {TAG_OPTIONS.filter(tag => !form.tags.includes(tag)).map(tag => (
               <button
                 key={tag}
                 type="button"
                 style={{
-                  background: '#f7f7f7', border: '1px solid #ccc', borderRadius: '12px',
-                  padding: '2px 10px', marginRight: '4px', cursor: 'pointer'
+                  background: '#391250e8',
+                  border: '1px solid #ccc',
+                  borderRadius: '12px',
+                  padding: '2px 10px',
+                  marginRight: '4px',
+                  cursor: 'pointer',
                 }}
                 onClick={() => handleTagAdd(tag)}
               >
@@ -194,17 +237,7 @@ export default function CreateListingPage() {
             ))}
           </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            name="title"
-            placeholder="Enter title"
-            value={form.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
+
         <div className="form-group">
           <label className="form-label">Expected Item</label>
           <input
@@ -216,6 +249,7 @@ export default function CreateListingPage() {
             required
           />
         </div>
+
         <div className="form-group">
           <label className="form-label">Cash Value (₹)</label>
           <input
@@ -227,6 +261,7 @@ export default function CreateListingPage() {
             required
           />
         </div>
+
         <div className="form-group">
           <label className="form-label">Location</label>
           <input
@@ -237,6 +272,7 @@ export default function CreateListingPage() {
             onChange={handleChange}
           />
         </div>
+
         <button type="submit" disabled={loading}>
           {loading ? 'Creating Listing...' : 'Create Listing'}
         </button>
